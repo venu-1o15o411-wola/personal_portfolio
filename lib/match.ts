@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import type { ProjectRecord } from "./db/queries";
 
-export const MATCH_MODEL = "gpt-4o-mini";
+export const MATCH_MODEL = "gpt-5.6-luna";
 
 export type MatchResult = {
   extracted: {

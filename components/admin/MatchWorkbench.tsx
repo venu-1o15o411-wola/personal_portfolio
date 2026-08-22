@@ -80,7 +80,7 @@ export function MatchWorkbench({
               </p>
             )
           ) : hasOpenAIKey ? (
-            <p className="text-sm text-admin-ink/50">Uses OpenAI gpt-4o-mini.</p>
+            <p className="text-sm text-admin-ink/50">Uses OpenAI gpt-5.6-luna.</p>
           ) : (
             <p className="text-sm text-admin-ink/50">
               OpenAI key missing — will use keyword overlap.
