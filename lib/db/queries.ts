@@ -1,4 +1,4 @@
-import { and, desc, eq, inArray, like, or, sql } from "drizzle-orm";
+import { and, desc, eq, ilike, inArray, or, sql } from "drizzle-orm";
 import { mediaKindFrom } from "@/lib/media";
 import {
   shareStatus,
@@ -105,10 +105,10 @@ export async function listProjects(options?: {
     const term = `%${options.search}%`;
     filters.push(
       or(
-        like(projects.title, term),
-        like(projects.pitch, term),
-        like(projects.tags, term),
-        like(projects.techStack, term),
+        ilike(projects.title, term),
+        ilike(projects.pitch, term),
+        sql`cast(${projects.tags} as text) ilike ${term}`,
+        sql`cast(${projects.techStack} as text) ilike ${term}`,
       ),
     );
   }
@@ -153,21 +153,22 @@ export async function getProjectBySlug(slug: string) {
 }
 
 export async function getProjectsByIds(ids: number[], publishedOnly = false) {
-  if (ids.length === 0) return [];
+  const numericIds = [
+    ...new Set(ids.map((id) => Number(id)).filter((id) => Number.isFinite(id))),
+  ];
+  if (numericIds.length === 0) return [];
   await ensureDb();
   const rows = await db
     .select()
     .from(projects)
     .where(
       publishedOnly
-        ? and(inArray(projects.id, ids), eq(projects.published, true))
-        : inArray(projects.id, ids),
+        ? and(inArray(projects.id, numericIds), eq(projects.published, true))
+        : inArray(projects.id, numericIds),
     );
   const hydrated = await hydrateProjects(rows);
-  const order = new Map(ids.map((id, index) => [id, index]));
-  return hydrated.sort(
-    (a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0),
-  );
+  const order = new Map(numericIds.map((id, index) => [id, index]));
+  return hydrated.sort((a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0));
 }
 
 export type ProjectInput = {

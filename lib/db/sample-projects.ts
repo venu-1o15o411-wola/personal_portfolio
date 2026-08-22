@@ -1,7 +1,7 @@
 import { mkdirSync, writeFileSync } from "fs";
 import path from "path";
 import { eq } from "drizzle-orm";
-import type { LibSQLDatabase } from "drizzle-orm/libsql";
+import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import * as schema from "./schema";
 
 type SampleProject = {
@@ -374,7 +374,7 @@ export function writeSampleAssets() {
   }
 }
 
-export async function seedSampleProjects(db: LibSQLDatabase<typeof schema>) {
+export async function seedSampleProjects(db: PostgresJsDatabase<typeof schema>) {
   const subs = await db.select().from(schema.subcategories);
   const bySlug = new Map(subs.map((sub) => [sub.slug, sub.id]));
   const sampleIds: number[] = [];

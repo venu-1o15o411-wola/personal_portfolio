@@ -1,9 +1,7 @@
-import { mkdir, writeFile } from "fs/promises";
-import path from "path";
-import { NextResponse } from "next/server";
 import { nanoid } from "nanoid";
-import { put } from "@vercel/blob";
+import { NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/auth";
+import { uploadProjectFile } from "@/lib/supabase";
 
 export const runtime = "nodejs";
 
@@ -24,18 +22,18 @@ export async function POST(request: Request) {
 
   const filename = `${nanoid(10)}-${safeFilename(file.name || "image.jpg")}`;
 
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
-    const blob = await put(`projects/${filename}`, file, {
-      access: "public",
-      addRandomSuffix: false,
-      token: process.env.BLOB_READ_WRITE_TOKEN,
-    });
-    return NextResponse.json({ url: blob.url });
+  try {
+    const url = await uploadProjectFile(filename, file);
+    return NextResponse.json({ url });
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : "Upload failed";
+    return NextResponse.json(
+      {
+        error:
+          "Could not upload to Supabase Storage. Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY, and use a public bucket named project-media.",
+        detail,
+      },
+      { status: 500 },
+    );
   }
-
-  const dir = path.join(process.cwd(), "public", "uploads");
-  await mkdir(dir, { recursive: true });
-  const buffer = Buffer.from(await file.arrayBuffer());
-  await writeFile(path.join(dir, filename), buffer);
-  return NextResponse.json({ url: `/uploads/${filename}` });
 }

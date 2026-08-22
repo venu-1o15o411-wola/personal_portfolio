@@ -1,16 +1,24 @@
-import { relations } from "drizzle-orm";
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { relations, sql } from "drizzle-orm";
+import {
+  boolean,
+  integer,
+  jsonb,
+  pgTable,
+  serial,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
 
-export const categories = sqliteTable("categories", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const categories = pgTable("categories", {
+  id: serial("id").primaryKey(),
   code: text("code").notNull(),
   slug: text("slug").notNull().unique(),
   name: text("name").notNull(),
   sortOrder: integer("sort_order").notNull(),
 });
 
-export const subcategories = sqliteTable("subcategories", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const subcategories = pgTable("subcategories", {
+  id: serial("id").primaryKey(),
   categoryId: integer("category_id")
     .notNull()
     .references(() => categories.id),
@@ -19,8 +27,8 @@ export const subcategories = sqliteTable("subcategories", {
   sortOrder: integer("sort_order").notNull(),
 });
 
-export const projects = sqliteTable("projects", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const projects = pgTable("projects", {
+  id: serial("id").primaryKey(),
   slug: text("slug").notNull().unique(),
   title: text("title").notNull(),
   pitch: text("pitch").notNull().default(""),
@@ -28,18 +36,18 @@ export const projects = sqliteTable("projects", {
   subcategoryId: integer("subcategory_id")
     .notNull()
     .references(() => subcategories.id),
-  extraSubcategoryIds: text("extra_subcategory_ids", { mode: "json" })
+  extraSubcategoryIds: jsonb("extra_subcategory_ids")
     .$type<number[]>()
     .notNull()
-    .$defaultFn(() => []),
-  tags: text("tags", { mode: "json" })
+    .default(sql`'[]'::jsonb`),
+  tags: jsonb("tags")
     .$type<string[]>()
     .notNull()
-    .$defaultFn(() => []),
-  techStack: text("tech_stack", { mode: "json" })
+    .default(sql`'[]'::jsonb`),
+  techStack: jsonb("tech_stack")
     .$type<string[]>()
     .notNull()
-    .$defaultFn(() => []),
+    .default(sql`'[]'::jsonb`),
   theAsk: text("the_ask").notNull().default(""),
   walkedInto: text("walked_into").notNull().default(""),
   theBuild: text("the_build").notNull().default(""),
@@ -49,26 +57,26 @@ export const projects = sqliteTable("projects", {
   repoUrl: text("repo_url"),
   role: text("role"),
   duration: text("duration"),
-  featured: integer("featured", { mode: "boolean" }).notNull().default(false),
-  published: integer("published", { mode: "boolean" }).notNull().default(false),
+  featured: boolean("featured").notNull().default(false),
+  published: boolean("published").notNull().default(false),
   aiSummary: text("ai_summary").notNull().default(""),
-  metrics: text("metrics", { mode: "json" })
+  metrics: jsonb("metrics")
     .$type<{ value: string; label: string }[]>()
     .notNull()
-    .$defaultFn(() => []),
-  createdAt: integer("created_at", { mode: "timestamp_ms" })
+    .default(sql`'[]'::jsonb`),
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "date" })
     .notNull()
-    .$defaultFn(() => new Date()),
-  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true, mode: "date" })
     .notNull()
-    .$defaultFn(() => new Date()),
+    .defaultNow(),
 });
 
-export const projectImages = sqliteTable("project_images", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const projectImages = pgTable("project_images", {
+  id: serial("id").primaryKey(),
   projectId: integer("project_id")
     .notNull()
-    .references(() => projects.id),
+    .references(() => projects.id, { onDelete: "cascade" }),
   url: text("url").notNull(),
   caption: text("caption").notNull().default(""),
   kind: text("kind").notNull().default("image"),
@@ -76,37 +84,37 @@ export const projectImages = sqliteTable("project_images", {
   sortOrder: integer("sort_order").notNull().default(0),
 });
 
-export const shares = sqliteTable("shares", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const shares = pgTable("shares", {
+  id: serial("id").primaryKey(),
   token: text("token").notNull().unique(),
   clientName: text("client_name"),
   jobTitle: text("job_title"),
   jobDescription: text("job_description"),
-  projectIds: text("project_ids", { mode: "json" })
+  projectIds: jsonb("project_ids")
     .$type<number[]>()
     .notNull()
-    .$defaultFn(() => []),
-  matchReasons: text("match_reasons", { mode: "json" })
+    .default(sql`'[]'::jsonb`),
+  matchReasons: jsonb("match_reasons")
     .$type<Record<string, string>>()
     .notNull()
-    .$defaultFn(() => ({})),
-  expiresAt: integer("expires_at", { mode: "timestamp_ms" }),
-  revokedAt: integer("revoked_at", { mode: "timestamp_ms" }),
+    .default(sql`'{}'::jsonb`),
+  expiresAt: timestamp("expires_at", { withTimezone: true, mode: "date" }),
+  revokedAt: timestamp("revoked_at", { withTimezone: true, mode: "date" }),
   passwordHash: text("password_hash"),
   viewCount: integer("view_count").notNull().default(0),
-  createdAt: integer("created_at", { mode: "timestamp_ms" })
+  createdAt: timestamp("created_at", { withTimezone: true, mode: "date" })
     .notNull()
-    .$defaultFn(() => new Date()),
+    .defaultNow(),
 });
 
-export const shareViews = sqliteTable("share_views", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
+export const shareViews = pgTable("share_views", {
+  id: serial("id").primaryKey(),
   shareId: integer("share_id")
     .notNull()
-    .references(() => shares.id),
-  viewedAt: integer("viewed_at", { mode: "timestamp_ms" })
+    .references(() => shares.id, { onDelete: "cascade" }),
+  viewedAt: timestamp("viewed_at", { withTimezone: true, mode: "date" })
     .notNull()
-    .$defaultFn(() => new Date()),
+    .defaultNow(),
   page: text("page").notNull().default("gallery"),
   pageLabel: text("page_label").notNull().default(""),
   country: text("country"),

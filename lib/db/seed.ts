@@ -1,9 +1,9 @@
 import { eq } from "drizzle-orm";
-import type { LibSQLDatabase } from "drizzle-orm/libsql";
+import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import * as schema from "./schema";
 import { TAXONOMY } from "./taxonomy";
 
-export async function seedTaxonomy(db: LibSQLDatabase<typeof schema>) {
+export async function seedTaxonomy(db: PostgresJsDatabase<typeof schema>) {
   for (const [index, category] of TAXONOMY.entries()) {
     const existing = await db
       .select()

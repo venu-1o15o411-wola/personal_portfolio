@@ -19,7 +19,7 @@ export async function generateMetadata({
   const { token, slug } = await params;
   const share = await getShareByToken(token);
   if (!share) return { title: "Not found" };
-  const projects = await getProjectsByIds(share.projectIds, true);
+  const projects = await getProjectsByIds(share.projectIds);
   const project = projects.find((item) => item.slug === slug);
   return { title: project?.title ?? "Case study" };
 }
@@ -38,7 +38,7 @@ export default async function CaseStudyPage({
     return <SharePasswordGate token={token} />;
   }
 
-  const projects = await getProjectsByIds(share.projectIds, true);
+  const projects = await getProjectsByIds(share.projectIds);
   const project = projects.find((item) => item.slug === slug);
   if (!project) notFound();
 

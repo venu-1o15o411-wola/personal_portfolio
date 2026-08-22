@@ -42,7 +42,7 @@ export default async function SharePage({
   }
 
   await trackShareView(share.id, "gallery", "Collection");
-  const projects = await getProjectsByIds(share.projectIds, true);
+  const projects = await getProjectsByIds(share.projectIds);
   const profile = getProfile();
 
   return (

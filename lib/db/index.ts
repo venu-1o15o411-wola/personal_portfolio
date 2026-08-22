@@ -1,27 +1,58 @@
-import { createClient } from "@libsql/client";
-import { drizzle } from "drizzle-orm/libsql";
-import { migrate } from "drizzle-orm/libsql/migrator";
-import path from "path";
+import postgres from "postgres";
+import { drizzle, type PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import * as schema from "./schema";
+import { categories } from "./schema";
 
-const url = process.env.TURSO_DATABASE_URL || "file:local.db";
+type Db = PostgresJsDatabase<typeof schema>;
 
-export const client = createClient({
-  url,
-  authToken: process.env.TURSO_AUTH_TOKEN || undefined,
+function databaseUrl() {
+  const url = process.env.DATABASE_URL?.trim();
+  if (!url) {
+    throw new Error(
+      "DATABASE_URL is not set. Add your Supabase Postgres URI (Settings → Database → URI) to .env.local.",
+    );
+  }
+  return url;
+}
+
+const globalForDb = globalThis as unknown as {
+  postgres?: ReturnType<typeof postgres>;
+  drizzle?: Db;
+};
+
+function getClient() {
+  if (!globalForDb.postgres) {
+    globalForDb.postgres = postgres(databaseUrl(), {
+      prepare: false,
+      max: 1,
+    });
+  }
+  return globalForDb.postgres;
+}
+
+function getDb(): Db {
+  if (!globalForDb.drizzle) {
+    globalForDb.drizzle = drizzle(getClient(), { schema });
+  }
+  return globalForDb.drizzle;
+}
+
+export const db = new Proxy({} as Db, {
+  get(_target, prop, _receiver) {
+    const real = getDb() as unknown as Record<PropertyKey, unknown>;
+    const value = real[prop];
+    return typeof value === "function" ? value.bind(real) : value;
+  },
 });
-
-export const db = drizzle(client, { schema });
 
 let ready: Promise<void> | null = null;
 
 async function init() {
-  const { seedTaxonomy } = await import("./seed");
-  const { seedSampleProjects } = await import("./sample-projects");
-  await client.execute("PRAGMA foreign_keys = ON");
-  await migrate(db, { migrationsFolder: path.join(process.cwd(), "drizzle") });
-  await seedTaxonomy(db);
-  await seedSampleProjects(db);
+  const existing = await db.select({ id: categories.id }).from(categories).limit(1);
+  if (!existing[0]) {
+    const { seedTaxonomy } = await import("./seed");
+    await seedTaxonomy(db);
+  }
 }
 
 export function ensureDb() {

@@ -92,30 +92,42 @@ export function ProjectForm({
     const body = new FormData();
     body.append("file", file);
     const response = await fetch("/api/upload", { method: "POST", body });
-    if (!response.ok) throw new Error("Upload failed");
-    const data = (await response.json()) as { url: string };
+    const data = (await response.json().catch(() => ({}))) as { url?: string; error?: string };
+    if (!response.ok || !data.url) {
+      throw new Error(data.error || "Upload failed");
+    }
     return data.url;
   }
 
   async function onCover(file: File | undefined) {
     if (!file) return;
-    const url = await uploadFile(file);
-    update("coverImageUrl", url);
+    setError("");
+    try {
+      const url = await uploadFile(file);
+      update("coverImageUrl", url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed");
+    }
   }
 
   async function onGallery(files: FileList | null) {
     if (!files?.length) return;
-    const uploaded: ImageItem[] = [];
-    for (const file of Array.from(files)) {
-      const url = await uploadFile(file);
-      uploaded.push({
-        url,
-        caption: "",
-        kind: mediaKindFrom(url, file.type),
-        posterUrl: "",
-      });
+    setError("");
+    try {
+      const uploaded: ImageItem[] = [];
+      for (const file of Array.from(files)) {
+        const url = await uploadFile(file);
+        uploaded.push({
+          url,
+          caption: "",
+          kind: mediaKindFrom(url, file.type),
+          posterUrl: "",
+        });
+      }
+      update("images", [...form.images, ...uploaded]);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Upload failed");
     }
-    update("images", [...form.images, ...uploaded]);
   }
 
   function addMediaUrl() {

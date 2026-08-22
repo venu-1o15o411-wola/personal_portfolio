@@ -1,14 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ["@libsql/client"],
+  serverExternalPackages: ["postgres"],
   outputFileTracingIncludes: {
     "/*": ["./drizzle/**/*"],
   },
   images: {
     remotePatterns: [
-      { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
-      { protocol: "https", hostname: "*.blob.vercel-storage.com" },
+      { protocol: "https", hostname: "*.supabase.co" },
+      { protocol: "https", hostname: "*.supabase.in" },
     ],
   },
 };

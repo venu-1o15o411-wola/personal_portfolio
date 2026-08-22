@@ -34,11 +34,11 @@ yarn-error.log*
 .env*
 !.env.example
 
-# local sqlite
+# leftover local sqlite (no longer used)
 local.db
 local.db-*
 
-# local uploads (Vercel Blob is used in production)
+# leftover local uploads (files now go to Supabase Storage)
 /public/uploads/*
 !/public/uploads/.gitkeep
 
