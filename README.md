@@ -10,8 +10,8 @@ cp .env.example .env.local
 
 Fill in your [Supabase](https://supabase.com) project:
 
-1. **Database** → Settings → Database → Connect. Paste the **transaction pooler** URI into `DATABASE_URL` (port `6543`). Optionally set `DIRECT_DATABASE_URL` to the session/direct URI (port `5432`) for migrations.
-2. **API** → copy Project URL into `NEXT_PUBLIC_SUPABASE_URL` and the **service role** key into `SUPABASE_SERVICE_ROLE_KEY` (server-only; never expose it in the browser).
+1. **Connect** (green button in the project) → **ORMs** or **URI**. Copy the **Session pooler** string into `DATABASE_URL` (host `aws-0-….pooler.supabase.com`, port `5432`, user `postgres.<project-ref>`). Do **not** use `db.<project>.supabase.co` — that host is IPv6-only and fails with `ENOTFOUND` on most home networks. For Vercel you can also use the **Transaction pooler** (port `6543`).
+2. **Settings → API** — Project URL → `NEXT_PUBLIC_SUPABASE_URL`. Use the **secret** key (`sb_secret_…` or the legacy `service_role` JWT) for `SUPABASE_SERVICE_ROLE_KEY`, not the publishable/`anon` key.
 3. Storage: leave `SUPABASE_STORAGE_BUCKET` unset to use `project-media`. Seed/upload will create a **public** bucket if it is missing. You can also create it in Storage yourself (Public).
 
 Then:
