@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Upwork Portfolio Library
 
-## Getting Started
+Private case-study library with admin-curated client share links. The public site is **share-link only** — the full archive stays behind `/admin`.
 
-First, run the development server:
+## Local setup
 
 ```bash
+cp .env.example .env.local
+npm install
+npm run db:seed
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open [http://localhost:3000/admin/login](http://localhost:3000/admin/login). Default local password is `changeme` (set `ADMIN_PASSWORD` and `SESSION_SECRET` in `.env.local`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Without `BLOB_READ_WRITE_TOKEN`, screenshots save to `public/uploads`. Without `OPENAI_API_KEY`, job matching falls back to keyword overlap.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Vercel deploy
 
-## Learn More
+Vercel cannot persist a SQLite file. Use **Turso** (hosted SQLite, free tier):
 
-To learn more about Next.js, take a look at the following resources:
+1. Create a database at [turso.tech](https://turso.tech) or via the Vercel Turso marketplace.
+2. Set `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN`.
+3. From your machine, point `.env.local` at Turso and run `npm run db:seed` (creates tables + the 10-category tree).
+4. Create a Vercel Blob store (Hobby includes 1 GB). `BLOB_READ_WRITE_TOKEN` is injected automatically.
+5. Set `ADMIN_PASSWORD`, `SESSION_SECRET`, `OPENAI_API_KEY`, and optionally `PORTFOLIO_NAME` / `PORTFOLIO_TITLE` / `PORTFOLIO_TAGLINE`.
+6. Deploy.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Workflow
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Add engagements under **Projects** (the ask, what you walked into, how you worked it, what they run now — plus gallery).
+2. Paste an Upwork job on **AI Match**, review the ranked set, generate a link.
+3. Or select projects manually and generate a link from the project library.
+4. Client opens `/p/{token}` — only the selected published work is visible.

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-label="knowledge-desk / matter ACL">
+  <rect width="1600" height="1000" fill="#161412"/>
+  <rect x="80" y="80" width="1440" height="840" rx="18" fill="#0c0b0a" stroke="rgba(244,239,230,0.1)"/>
+  <circle cx="130" cy="130" r="8" fill="#c4a574"/>
+  <circle cx="160" cy="130" r="8" fill="#9a9186"/>
+  <circle cx="190" cy="130" r="8" fill="#9a9186"/>
+  <text x="230" y="138" fill="#9a9186" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18">knowledge-desk / matter ACL</text>
+  <rect x="120" y="200" width="640" height="640" rx="12" fill="#221f1b"/>
+  <rect x="800" y="200" width="640" height="190" rx="12" fill="#221f1b"/>
+  <rect x="800" y="420" width="640" height="190" rx="12" fill="#221f1b"/>
+  <rect x="800" y="640" width="640" height="200" rx="12" fill="#221f1b"/>
+  <text x="160" y="280" fill="#f4efe6" font-family="Georgia, serif" font-size="36">Cited clause · DPA §4.2</text>
+  <text x="840" y="280" fill="#c4a574" font-family="ui-monospace, Menlo, monospace" font-size="20">SOURCE  ·  94% eval</text>
+  <text x="840" y="500" fill="#f4efe6" font-family="Georgia, serif" font-size="28">Counsel review queue is clear.</text>
+</svg>

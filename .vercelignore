@@ -1,0 +1,3 @@
+# Ignore local SQLite
+local.db
+local.db-*
