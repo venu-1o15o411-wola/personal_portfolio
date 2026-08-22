@@ -46,12 +46,15 @@ export function StoryReel({
   return (
     <section className="relative mx-auto max-w-6xl px-6 py-8 sm:px-10 sm:py-16">
       <header className="max-w-2xl">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brass">On the job</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brass">
+          On the job
+        </p>
         <h2 className="mt-3 text-3xl font-bold tracking-tight text-white sm:text-5xl">
           How this engagement actually went.
         </h2>
         <p className="mt-4 max-w-xl text-base leading-7 text-muted">
-          Kickoff, the messy room, the calls I made with them in it — then what they open on Monday.
+          Kickoff, the messy room, the calls I made with them in it — then what
+          they open on Monday.
         </p>
       </header>
 
@@ -81,7 +84,10 @@ export function StoryReel({
                     <span className="text-sm font-medium">{beat.title}</span>
                   </a>
                   {isActive ? (
-                    <span className="ml-3 block h-px w-16 bg-brass" aria-hidden="true" />
+                    <span
+                      className="ml-3 block h-px w-16 bg-brass"
+                      aria-hidden="true"
+                    />
                   ) : null}
                 </li>
               );
@@ -97,11 +103,13 @@ export function StoryReel({
                 key={beat.id}
                 id={beat.id}
                 className={`relative scroll-mt-32 ${
-                  index === beats.length - 1 && !clientNote ? "pb-4" : "pb-20 sm:pb-28"
+                  index === beats.length - 1 && !clientNote
+                    ? "pb-4"
+                    : "pb-20 sm:pb-28"
                 }`}
               >
                 <span
-                  className={`absolute -left-[1.4rem] top-3 h-3.5 w-3.5 rounded-full border-2 sm:-left-[1.65rem] ${
+                  className={`absolute left-[1.4rem] top-3 h-3.5 w-3.5 rounded-full border-2 sm:left-[1.65rem] ${
                     beat.id === active
                       ? "border-brass bg-brass shadow-[0_0_18px_rgba(66,184,131,0.8)]"
                       : "border-brass/70 bg-ink"
@@ -109,11 +117,13 @@ export function StoryReel({
                   aria-hidden="true"
                 />
 
-                <p className="story-num pointer-events-none absolute -top-8 right-0 select-none font-mono text-[6.5rem] leading-none font-bold tracking-tight text-white/[0.04] sm:-top-10 sm:text-[8.5rem]">
+                <p className="story-num pointer-events-none absolute -top-8 right-0 select-none font-mono text-[6.5rem] leading-none font-bold tracking-tight text-white/4 sm:-top-10 sm:text-[8.5rem]">
                   {beat.index}
                 </p>
 
-                <p className="font-mono text-[11px] tracking-[0.22em] text-brass">{beat.index}</p>
+                <p className="font-mono text-[11px] tracking-[0.22em] text-brass">
+                  {beat.index}
+                </p>
                 <p className="mt-3 text-sm text-muted">{beat.kicker}</p>
                 <h3 className="mt-1 text-4xl font-bold tracking-tight text-white sm:text-5xl">
                   {beat.title}
@@ -154,7 +164,7 @@ export function StoryReel({
           {clientNote ? (
             <figure className="relative mt-4 max-w-2xl pb-4 pl-1">
               <span
-                className="absolute -left-[1.4rem] top-3 h-3.5 w-3.5 rounded-full border-2 border-brass bg-ink sm:-left-[1.65rem]"
+                className="absolute left-[1.4rem] top-3 h-3.5 w-3.5 rounded-full border-2 border-brass bg-ink sm:left-[1.65rem]"
                 aria-hidden="true"
               />
               <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-brass">
@@ -176,11 +186,16 @@ export function StoryCredits({ stack }: { stack: string[] }) {
   return (
     <section className="mx-auto max-w-6xl px-6 pb-8 pt-4 sm:px-10">
       <div className="overflow-hidden rounded-[1.75rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.01))] px-6 py-10 sm:px-10">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-muted">Credits</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-muted">
+          Credits
+        </p>
         <p className="mt-2 text-sm text-muted">Shot with this stack</p>
         <ul className="mt-8 flex flex-wrap gap-x-3 gap-y-4">
           {stack.map((item, index) => (
-            <li key={item} className="flex items-baseline gap-3 text-xl font-semibold tracking-tight text-white sm:text-2xl">
+            <li
+              key={item}
+              className="flex items-baseline gap-3 text-xl font-semibold tracking-tight text-white sm:text-2xl"
+            >
               <span>{item}</span>
               {index < stack.length - 1 ? (
                 <span className="text-brass/70" aria-hidden="true">

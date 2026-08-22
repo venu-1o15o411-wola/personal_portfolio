@@ -94,7 +94,9 @@ export function CaseStudyView(props: CaseStudyViewProps) {
             <h1 className="mt-5 text-4xl font-bold leading-[1.05] tracking-tight wrap-break-word text-white sm:text-5xl lg:text-6xl">
               {props.title}
             </h1>
-            <p className="mt-5 max-w-xl text-base leading-8 text-cream/75 sm:text-lg">{props.pitch}</p>
+            <p className="mt-5 max-w-xl text-base leading-8 text-cream/75 sm:text-lg">
+              {props.pitch}
+            </p>
             {facts.length > 0 ? (
               <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
                 {facts.map((fact) => (
@@ -102,7 +104,9 @@ export function CaseStudyView(props: CaseStudyViewProps) {
                     <dt className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">
                       {fact.label}
                     </dt>
-                    <dd className="mt-1 truncate text-sm font-medium text-white">{fact.value}</dd>
+                    <dd className="mt-1 truncate text-sm font-medium text-white">
+                      {fact.value}
+                    </dd>
                   </div>
                 ))}
               </dl>
@@ -138,7 +142,7 @@ export function CaseStudyView(props: CaseStudyViewProps) {
                   </div>
                   <MediaFrame
                     item={hero}
-                    className="aspect-[16/10]"
+                    className="aspect-16/10"
                     imgClassName="h-full w-full object-cover"
                     autoPlay={hero.kind === "video"}
                     muted
@@ -155,8 +159,13 @@ export function CaseStudyView(props: CaseStudyViewProps) {
         <section className="border-y border-white/10 bg-ink-2/80">
           <div className="mx-auto grid max-w-6xl gap-8 px-6 py-10 sm:grid-cols-3 sm:px-10">
             {props.metrics.map((metric) => (
-              <div key={metric.label} className="min-w-0 border-l-2 border-brass/70 pl-4">
-                <p className="text-3xl font-bold tracking-tight text-white sm:text-4xl">{metric.value}</p>
+              <div
+                key={metric.label}
+                className="min-w-0 border-l-2 border-brass/70 pl-4"
+              >
+                <p className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                  {metric.value}
+                </p>
                 <p className="mt-2 text-sm text-muted">{metric.label}</p>
               </div>
             ))}
@@ -170,7 +179,9 @@ export function CaseStudyView(props: CaseStudyViewProps) {
             <p className="text-xs font-semibold uppercase tracking-wide text-brass">
               Why this is relevant
             </p>
-            <p className="mt-2 max-w-3xl text-base leading-7 text-cream/90">{props.reason}</p>
+            <p className="mt-2 max-w-3xl text-base leading-7 text-cream/90">
+              {props.reason}
+            </p>
           </aside>
         </section>
       ) : null}
@@ -181,11 +192,21 @@ export function CaseStudyView(props: CaseStudyViewProps) {
         </section>
       ) : null}
 
-      <StoryReel beats={beats} clientNote={props.clientNote} climaxId="in-their-hands" resultMetrics={props.metrics} />
+      <StoryReel
+        beats={beats}
+        clientNote={props.clientNote}
+        climaxId="in-their-hands"
+        resultMetrics={props.metrics}
+      />
       <StoryCredits stack={props.techStack} />
 
-      <nav aria-label="More case studies" className="mx-auto max-w-6xl px-6 pb-24 pt-10 sm:px-10">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-muted">Continue</p>
+      <nav
+        aria-label="More case studies"
+        className="mx-auto max-w-6xl px-6 pb-24 pt-10 sm:px-10"
+      >
+        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-muted">
+          Continue
+        </p>
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
           {props.previous ? (
             <NeighborCard
@@ -258,15 +279,23 @@ function NeighborCard({
       ) : (
         <span className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(66,184,131,0.18),transparent_50%)]" />
       )}
-      <span className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/20" />
+      <span className="absolute inset-0 bg-linear-to-t from-ink via-ink/55 to-ink/20" />
       <span className="relative flex h-full min-h-44 flex-col justify-end p-5 sm:p-6">
-        <span className={`flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-brass ${isNext ? "justify-end" : ""}`}>
+        <span
+          className={`flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-brass ${isNext ? "justify-end" : ""}`}
+        >
           {isNext ? null : <ArrowLeft className="h-4 w-4" aria-hidden="true" />}
           {kicker || (isNext ? "Next project" : "Previous project")}
-          {isNext ? <ArrowRight className="h-4 w-4" aria-hidden="true" /> : null}
+          {isNext ? (
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          ) : null}
         </span>
-        <span className="mt-2 block text-xl font-semibold tracking-tight text-white">{title}</span>
-        {description ? <span className="mt-1 block text-sm text-muted">{description}</span> : null}
+        <span className="mt-2 block text-xl font-semibold tracking-tight text-white">
+          {title}
+        </span>
+        {description ? (
+          <span className="mt-1 block text-sm text-muted">{description}</span>
+        ) : null}
       </span>
     </Link>
   );
