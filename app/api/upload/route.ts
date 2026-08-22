@@ -29,8 +29,7 @@ export async function POST(request: Request) {
     const detail = error instanceof Error ? error.message : "Upload failed";
     return NextResponse.json(
       {
-        error:
-          "Could not upload to Supabase Storage. Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY, and use a public bucket named project-media.",
+        error: detail,
         detail,
       },
       { status: 500 },

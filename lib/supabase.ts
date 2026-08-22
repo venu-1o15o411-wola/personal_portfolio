@@ -2,12 +2,38 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 export const STORAGE_BUCKET = process.env.SUPABASE_STORAGE_BUCKET || "project-media";
 
+function supabaseUrl() {
+  return (
+    process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() ||
+    process.env.SUPABASE_URL?.trim() ||
+    ""
+  );
+}
+
+function supabaseSecretKey() {
+  return (
+    process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() ||
+    process.env.SUPABASE_SECRET_KEY?.trim() ||
+    ""
+  );
+}
+
 export function supabaseAdmin(): SupabaseClient {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
-  if (!url || !key) {
+  const url = supabaseUrl();
+  const key = supabaseSecretKey();
+  if (!url) {
     throw new Error(
-      "Supabase Storage is not configured. Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.",
+      "NEXT_PUBLIC_SUPABASE_URL is missing. Set it to https://YOUR_PROJECT.supabase.co (local .env.local and Vercel env), then restart/redeploy.",
+    );
+  }
+  if (!key) {
+    throw new Error(
+      "SUPABASE_SERVICE_ROLE_KEY is missing. In Supabase: Project Settings → API Keys → Secret key (sb_secret_…), not the publishable key.",
+    );
+  }
+  if (key.startsWith("sb_publishable_") || key.includes('"role":"anon"')) {
+    throw new Error(
+      "That key is the publishable/anon key. Storage uploads need the Secret key (sb_secret_…) or the legacy service_role JWT.",
     );
   }
   return createClient(url, key, {
