@@ -185,6 +185,14 @@ export function ProjectForm({
           }),
         images: form.images,
       });
+      if ("error" in result && result.error) {
+        setError(result.error);
+        return;
+      }
+      if (!("id" in result) || !result.id) {
+        setError("Could not save project");
+        return;
+      }
       router.push(`/admin/projects/${result.id}`);
       router.refresh();
     } catch (err) {

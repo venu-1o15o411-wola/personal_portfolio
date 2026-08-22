@@ -106,24 +106,27 @@ export async function generateAiSummary(input: {
 
   if (!process.env.OPENAI_API_KEY) return fallback;
 
-  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-  const response = await openai.chat.completions.create({
-    model: MATCH_MODEL,
-    temperature: 0.3,
-    messages: [
-      {
-        role: "system",
-        content:
-          "Write a 45-70 word matching blurb for a freelance engagement. Cover what the client hired for, what was actually built, stack, and what they run now. No marketing fluff.",
-      },
-      {
-        role: "user",
-        content: JSON.stringify(input),
-      },
-    ],
-  });
+  try {
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    const response = await openai.chat.completions.create({
+      model: MATCH_MODEL,
+      messages: [
+        {
+          role: "system",
+          content:
+            "Write a 45-70 word matching blurb for a freelance engagement. Cover what the client hired for, what was actually built, stack, and what they run now. No marketing fluff.",
+        },
+        {
+          role: "user",
+          content: JSON.stringify(input),
+        },
+      ],
+    });
 
-  return response.choices[0]?.message?.content?.trim() || fallback;
+    return response.choices[0]?.message?.content?.trim() || fallback;
+  } catch {
+    return fallback;
+  }
 }
 
 export async function matchJobToProjects(
@@ -140,7 +143,6 @@ export async function matchJobToProjects(
   try {
     const response = await openai.chat.completions.create({
       model: MATCH_MODEL,
-      temperature: 0.2,
       response_format: { type: "json_object" },
       messages: [
         {

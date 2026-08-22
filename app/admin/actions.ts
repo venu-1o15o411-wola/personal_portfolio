@@ -74,33 +74,41 @@ const projectSchema = z.object({
 
 export async function saveProjectAction(payload: unknown) {
   await requireAdmin();
-  const parsed = projectSchema.parse(payload);
-  const slug = slugify(parsed.slug || parsed.title);
-  const aiSummary = await generateAiSummary({
-    title: parsed.title,
-    pitch: parsed.pitch,
-    stack: parsed.techStack,
-    theAsk: parsed.theAsk,
-    walkedInto: parsed.walkedInto,
-    theBuild: parsed.theBuild,
-    inTheirHands: parsed.inTheirHands,
-  });
+  const parsed = projectSchema.safeParse(payload);
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message || "Invalid case study" };
+  }
+  try {
+    const slug = slugify(parsed.data.slug || parsed.data.title);
+    const aiSummary = await generateAiSummary({
+      title: parsed.data.title,
+      pitch: parsed.data.pitch,
+      stack: parsed.data.techStack,
+      theAsk: parsed.data.theAsk,
+      walkedInto: parsed.data.walkedInto,
+      theBuild: parsed.data.theBuild,
+      inTheirHands: parsed.data.inTheirHands,
+    });
 
-  const input: ProjectInput = {
-    ...parsed,
-    slug,
-    coverImageUrl: parsed.coverImageUrl || null,
-    liveUrl: parsed.liveUrl || null,
-    repoUrl: parsed.repoUrl || null,
-    role: parsed.role || null,
-    duration: parsed.duration || null,
-    aiSummary,
-    metrics: parsed.metrics ?? [],
-  };
+    const input: ProjectInput = {
+      ...parsed.data,
+      slug,
+      coverImageUrl: parsed.data.coverImageUrl || null,
+      liveUrl: parsed.data.liveUrl || null,
+      repoUrl: parsed.data.repoUrl || null,
+      role: parsed.data.role || null,
+      duration: parsed.data.duration || null,
+      aiSummary,
+      metrics: parsed.data.metrics ?? [],
+    };
 
-  const id = parsed.id ? Number(parsed.id) : undefined;
-  const savedId = await saveProject(input, id);
-  return { id: savedId };
+    const id = parsed.data.id ? Number(parsed.data.id) : undefined;
+    const savedId = await saveProject(input, id);
+    return { id: savedId };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Could not save project";
+    return { error: message };
+  }
 }
 
 export async function deleteProjectAction(id: number) {
