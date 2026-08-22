@@ -15,7 +15,7 @@ export const categories = pgTable("categories", {
   slug: text("slug").notNull().unique(),
   name: text("name").notNull(),
   sortOrder: integer("sort_order").notNull(),
-});
+}).enableRLS();
 
 export const subcategories = pgTable("subcategories", {
   id: serial("id").primaryKey(),
@@ -25,7 +25,7 @@ export const subcategories = pgTable("subcategories", {
   slug: text("slug").notNull().unique(),
   name: text("name").notNull(),
   sortOrder: integer("sort_order").notNull(),
-});
+}).enableRLS();
 
 export const projects = pgTable("projects", {
   id: serial("id").primaryKey(),
@@ -70,7 +70,7 @@ export const projects = pgTable("projects", {
   updatedAt: timestamp("updated_at", { withTimezone: true, mode: "date" })
     .notNull()
     .defaultNow(),
-});
+}).enableRLS();
 
 export const projectImages = pgTable("project_images", {
   id: serial("id").primaryKey(),
@@ -82,7 +82,7 @@ export const projectImages = pgTable("project_images", {
   kind: text("kind").notNull().default("image"),
   posterUrl: text("poster_url"),
   sortOrder: integer("sort_order").notNull().default(0),
-});
+}).enableRLS();
 
 export const shares = pgTable("shares", {
   id: serial("id").primaryKey(),
@@ -105,7 +105,7 @@ export const shares = pgTable("shares", {
   createdAt: timestamp("created_at", { withTimezone: true, mode: "date" })
     .notNull()
     .defaultNow(),
-});
+}).enableRLS();
 
 export const shareViews = pgTable("share_views", {
   id: serial("id").primaryKey(),
@@ -124,7 +124,7 @@ export const shareViews = pgTable("share_views", {
   browser: text("browser"),
   referrer: text("referrer"),
   source: text("source").notNull().default("client"),
-});
+}).enableRLS();
 
 export const categoriesRelations = relations(categories, ({ many }) => ({
   subcategories: many(subcategories),
